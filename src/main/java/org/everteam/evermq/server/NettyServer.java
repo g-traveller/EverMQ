@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
@@ -27,7 +26,7 @@ public class NettyServer {
     @Resource
     private NettyConfig nettyConfig;
 
-    private void start() throws InterruptedException {
+    public void start() throws InterruptedException {
         this.bossGroup = new NioEventLoopGroup(1);
         this.workerGroup = new NioEventLoopGroup();
         try {
@@ -53,11 +52,6 @@ public class NettyServer {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
-    }
-
-    @PostConstruct
-    public void postConstruct() throws InterruptedException {
-        this.start();
     }
 
     @PreDestroy

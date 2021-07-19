@@ -1,12 +1,28 @@
 package org.everteam.evermq;
 
+import org.everteam.evermq.server.NettyServer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
-public class EverMqApplication {
+public class EverMqApplication implements CommandLineRunner {
 
-	public static void main(String[] args) {
+	private final NettyServer nettyServer;
+
+	@Autowired
+	public EverMqApplication(NettyServer nettyServer) {
+		this.nettyServer = nettyServer;
+	}
+
+	public static void main(String[] args) throws InterruptedException {
 		SpringApplication.run(EverMqApplication.class, args);
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		this.nettyServer.start();
 	}
 }
