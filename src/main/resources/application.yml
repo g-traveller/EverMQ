@@ -1,2 +1,4 @@
 netty:
   port: 8080
+queue:
+  maxConnection: 10000

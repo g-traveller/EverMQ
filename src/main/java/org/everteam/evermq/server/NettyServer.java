@@ -8,11 +8,12 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.everteam.evermq.config.NettyConfig;
+import org.everteam.evermq.decoder.InMessageDecoder;
+import org.everteam.evermq.handler.ServerHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 @Component
@@ -20,15 +21,14 @@ public class NettyServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyServer.class);
 
-    private EventLoopGroup bossGroup;
-    private EventLoopGroup workerGroup;
-
     @Resource
     private NettyConfig nettyConfig;
 
     public void start() throws InterruptedException {
-        this.bossGroup = new NioEventLoopGroup(1);
-        this.workerGroup = new NioEventLoopGroup();
+        final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        final EventLoopGroup workerGroup = new NioEventLoopGroup();
+
+        final ServerHandler serverHandler = new ServerHandler();
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
@@ -39,6 +39,8 @@ public class NettyServer {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline p = ch.pipeline();
+                            p.addLast(new InMessageDecoder());
+                            p.addLast(serverHandler);
                         }
                     });
 
@@ -52,12 +54,5 @@ public class NettyServer {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
-    }
-
-    @PreDestroy
-    public void close() {
-        LOGGER.info("shutdown netty server");
-        this.bossGroup.shutdownGracefully();
-        this.workerGroup.shutdownGracefully();
     }
 }
