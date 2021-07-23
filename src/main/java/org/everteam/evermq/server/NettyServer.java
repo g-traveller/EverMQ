@@ -9,9 +9,10 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.everteam.evermq.config.NettyConfig;
 import org.everteam.evermq.decoder.InMessageDecoder;
-import org.everteam.evermq.handler.ServerHandler;
+import org.everteam.evermq.handler.InMessageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -24,11 +25,17 @@ public class NettyServer {
     @Resource
     private NettyConfig nettyConfig;
 
+    private final InMessageHandler inMessageHandler;
+
+    @Autowired
+    public NettyServer(InMessageHandler inMessageHandler) {
+        this.inMessageHandler = inMessageHandler;
+    }
+
     public void start() throws InterruptedException {
         final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         final EventLoopGroup workerGroup = new NioEventLoopGroup();
 
-        final ServerHandler serverHandler = new ServerHandler();
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
@@ -40,7 +47,7 @@ public class NettyServer {
                         public void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline p = ch.pipeline();
                             p.addLast(new InMessageDecoder());
-                            p.addLast(serverHandler);
+                            p.addLast(inMessageHandler);
                         }
                     });
 

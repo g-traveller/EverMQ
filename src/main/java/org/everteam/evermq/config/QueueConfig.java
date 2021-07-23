@@ -8,5 +8,5 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "queue")
 @Data
 public class QueueConfig {
-    private long maxConnection;
+    private int maxConnection;
 }
