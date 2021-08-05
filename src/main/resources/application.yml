@@ -1,4 +1,4 @@
 netty:
   port: 8080
-queue:
+topic:
   maxConnection: 10000

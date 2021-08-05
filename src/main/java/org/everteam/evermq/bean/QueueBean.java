@@ -1,7 +1,6 @@
 package org.everteam.evermq.bean;
 
 import org.everteam.evermq.config.QueueConfig;
-import org.everteam.evermq.processor.EverQueueProcessTask;
 import org.everteam.evermq.queue.EverQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
