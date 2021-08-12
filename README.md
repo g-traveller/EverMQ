@@ -7,11 +7,11 @@ This project is under development, it is used to demo how to implement a basic M
 EverMQ is message queue middleware which based on Netty, It is compatible with different communication
 protocol: TCP, HTTP, WebSocket and RPC, Also, It provides high level Java SDK.
 
-###Topic
+### Topic
 Topic represent message container, message will be forward to specific topic with topic attribute.
 Each topic contain a queue. FIFO
 
-###Message
+### Message
 Message will be forward to given topic, any producer which subscribe this topic will receive message.
 
 
@@ -27,7 +27,11 @@ Open terminal, run following command:
 ```
 
 ## Run
-After run, following command to test:
+After run, following command to test health:
+```
+curl localhost:8000/actuator/health
+```
+to do functional test, run testcase org.everteam.evermq.it.SendMessageTest.testSendByteMessage
 ```
 curl localhost:8000/actuator/health
 ```

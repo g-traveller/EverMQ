@@ -17,16 +17,28 @@ public class TopicStore {
         this.topicMap = new HashMap<>();
     }
 
-    public Topic getTopic(String name) {
+    private Topic getTopic(String name) {
         return topicMap.get(name);
     }
 
     public void pushMessage(String topicName, byte[] message) throws TopicOperationException {
+        this.ensureTopicExists(topicName);
         Topic topic = this.getTopic(topicName);
         try {
             topic.getEverQueue().enqueueNonBlock(message);
         } catch (QueueOperationException e) {
             throw new TopicOperationException(e.getMessage());
+        }
+    }
+
+    private void ensureTopicExists(String topicName) {
+        // double check to avoid thread conflict
+        if (this.getTopic(topicName) == null) {
+            synchronized (TopicStore.class) {
+                if (this.getTopic(topicName) == null) {
+                    topicMap.put(topicName, new Topic());
+                }
+            }
         }
     }
 }
