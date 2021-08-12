@@ -33,4 +33,8 @@ public class EverQueue<T> {
         }
         return inMessage;
     }
+
+    public long getLength() {
+        return this.messageArray.size();
+    }
 }

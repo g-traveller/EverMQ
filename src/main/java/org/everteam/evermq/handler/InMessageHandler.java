@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.everteam.evermq.exception.TopicOperationException;
 import org.everteam.evermq.model.InMessage;
-import org.everteam.evermq.topic.TopicStore;
+import org.everteam.evermq.topic.TopicHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +17,11 @@ public class InMessageHandler extends SimpleChannelInboundHandler<InMessage> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InMessageHandler.class);
 
-    private final TopicStore topicStore;
+    private final TopicHandler topicHandler;
 
     @Autowired
-    public InMessageHandler(TopicStore topicStore) {
-        this.topicStore = topicStore;
+    public InMessageHandler(TopicHandler topicHandler) {
+        this.topicHandler = topicHandler;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class InMessageHandler extends SimpleChannelInboundHandler<InMessage> {
 
         // save to message queue by topic
         try {
-            this.topicStore.pushMessage(inMessage.getTopic(), inMessage.getMessage());
+            this.topicHandler.pushMessage(inMessage.getTopic(), inMessage.getMessage());
         } catch (TopicOperationException e) {
             e.printStackTrace();
             LOGGER.error("failed to insert message: {}", e.getLocalizedMessage());

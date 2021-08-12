@@ -37,7 +37,7 @@ public class SendMessageTest {
 
     @Test
     public void testSendByteMessage() throws Exception {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 1; i++) {
             InMessage inMessage = new InMessage();
             inMessage.setTopic("test-topic");
             inMessage.setMessage("test-message".getBytes());
