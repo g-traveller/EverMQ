@@ -10,6 +10,8 @@ import io.netty.handler.logging.LoggingHandler;
 import org.everteam.evermq.config.NettyConfig;
 import org.everteam.evermq.decoder.InMessageDecoder;
 import org.everteam.evermq.handler.InMessageHandler;
+import org.everteam.evermq.handler.TopicHandler;
+import org.everteam.evermq.model.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +28,12 @@ public class NettyServer {
     private NettyConfig nettyConfig;
 
     private final InMessageHandler inMessageHandler;
+    private final TopicHandler topicHandler;
 
     @Autowired
-    public NettyServer(InMessageHandler inMessageHandler) {
+    public NettyServer(InMessageHandler inMessageHandler, TopicHandler topicHandler) {
         this.inMessageHandler = inMessageHandler;
+        this.topicHandler = topicHandler;
     }
 
     public void start() throws InterruptedException {
@@ -48,6 +52,7 @@ public class NettyServer {
                             ChannelPipeline p = ch.pipeline();
                             p.addLast(new InMessageDecoder());
                             p.addLast(inMessageHandler);
+                            p.addLast(topicHandler);
                         }
                     });
 

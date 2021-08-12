@@ -3,9 +3,7 @@ package org.everteam.evermq.handler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.everteam.evermq.exception.TopicOperationException;
 import org.everteam.evermq.model.InMessage;
-import org.everteam.evermq.topic.TopicHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +27,7 @@ public class InMessageHandler extends SimpleChannelInboundHandler<InMessage> {
                                 InMessage inMessage) {
         String message = new String(inMessage.getMessage());
         LOGGER.info("get channel read: " + message);
-
-        // save to message queue by topic
-        try {
-            this.topicHandler.pushMessage(inMessage.getTopic(), inMessage.getMessage());
-        } catch (TopicOperationException e) {
-            e.printStackTrace();
-            LOGGER.error("failed to insert message: {}", e.getLocalizedMessage());
-        }
+        channelHandlerContext.fireChannelRead(inMessage);
     }
 
     @Override
